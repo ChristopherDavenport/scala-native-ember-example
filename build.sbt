@@ -10,6 +10,8 @@ name := "Scala Native Ember Example"
 libraryDependencies ++= Seq(
   "com.armanbilge" %%% "epollcat" % "0.1.0", // Runtime
   "org.http4s" %%% "http4s-ember-client" % "0.23.16",
+  "org.http4s" %%% "http4s-ember-server" % "0.23.16",
+  "org.http4s" %%% "http4s-dsl" % "0.23.16",
   "org.http4s" %%% "http4s-circe" % "0.23.16",
 )
 
