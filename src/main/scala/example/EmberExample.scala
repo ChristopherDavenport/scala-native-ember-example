@@ -12,6 +12,7 @@ import org.http4s.circe._
 import org.http4s.dsl.request._
 import io.circe._
 import epollcat.EpollApp
+import fs2.io.net.Network
 import fs2.io.net.tls.S2nConfig
 import fs2.io.net.tls.TLSContext
 
@@ -63,7 +64,7 @@ object EmberExample extends EpollApp {
     S2nConfig.builder
       .withCipherPreferences("default_tls13")
       .build[IO]
-      .map(TLSContext.Builder.forAsync[IO].fromS2nConfig(_))
+      .map(Network[IO].tlsContext.fromS2nConfig(_))
 
 }
 
