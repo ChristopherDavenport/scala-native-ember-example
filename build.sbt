@@ -24,7 +24,7 @@ nativeConfig ~= { c =>
     c.withLinkingOptions(c.linkingOptions :+ "-L/home/linuxbrew/.linuxbrew/lib")
   } else if (isMacOs) // brew-installed OpenSSL
     if(isArm) c.withLinkingOptions(c.linkingOptions :+ "-L/opt/homebrew/opt/openssl@3/lib")
-    else c.withLinkingOptions(c.linkingOptions :+ "-L/usr/local/opt/openssl@1.1/lib")
+    else c.withLinkingOptions(c.linkingOptions :+ "-L/usr/local/opt/openssl@3/lib")
   else c
 }
 envVars ++= {
