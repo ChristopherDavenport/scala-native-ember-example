@@ -15,20 +15,16 @@ libraryDependencies ++= Seq(
   "org.http4s" %%% "http4s-circe" % "0.23.16",
 )
 
-val isLinux = {
-  val osName = Option(System.getProperty("os.name"))
-  osName.exists(_.toLowerCase().contains("linux"))
-}
-val isMacOs = {
-  val osName = Option(System.getProperty("os.name"))
-  osName.exists(_.toLowerCase().contains("mac"))
-}
+val isLinux = Option(System.getProperty("os.name")).exists(_.toLowerCase().contains("linux"))
+val isMacOs = Option(System.getProperty("os.name")).exists(_.toLowerCase().contains("mac"))
+val isArm = Option(System.getProperty("os.arch")).exists(_.toLowerCase().contains("aarch64"))
 
 nativeConfig ~= { c =>
   if (isLinux) { // brew-installed s2n
     c.withLinkingOptions(c.linkingOptions :+ "-L/home/linuxbrew/.linuxbrew/lib")
   } else if (isMacOs) // brew-installed OpenSSL
-    c.withLinkingOptions(c.linkingOptions :+ "-L/usr/local/opt/openssl@1.1/lib")
+    if(isArm) c.withLinkingOptions(c.linkingOptions :+ "-L/opt/homebrew/opt/openssl@3/lib")
+    else c.withLinkingOptions(c.linkingOptions :+ "-L/usr/local/opt/openssl@3/lib")
   else c
 }
 envVars ++= {
