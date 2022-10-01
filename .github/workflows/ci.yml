@@ -1,0 +1,34 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    branches: ['**', '!update/**', '!pr/**']
+  push:
+    branches: ['**', '!update/**', '!pr/**']
+
+jobs:
+  build:
+    name: Build and Link
+    strategy:
+      matrix:
+        os:
+          - ubuntu-22.04
+          - macos-11
+          - macos-12
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout current branch (full)
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install s2n (ubuntu)
+        if: startsWith(matrix.os, 'ubuntu')
+        run: /home/linuxbrew/.linuxbrew/bin/brew install s2n
+
+      - name: Install s2n (macOS)
+        if: startsWith(matrix.os, 'macos')
+        run: brew install s2n
+
+      - name: Link
+        run: sbt nativeLink
