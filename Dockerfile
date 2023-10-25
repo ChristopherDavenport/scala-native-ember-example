@@ -14,7 +14,7 @@ WORKDIR /build
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     curl ca-certificates unzip git \
-    clang llvm \
+    clang \
     # for building s2n + http4s native
     libssl-dev cmake build-essential
 
@@ -43,13 +43,9 @@ RUN cd s2n-tls && \
 COPY . /build
 RUN S2N_LIBRARY_PATH=/build/s2n-tls/s2n-tls-install/lib sbt nativeLink
 
-FROM debian:11-slim
+FROM gcr.io/distroless/cc
 WORKDIR /app
 COPY --from=build-env /build/target/scala-3.3.1/scala-native-ember-example-out ./app
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    ca-certificates && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
 EXPOSE 8080
 ENV S2N_DONT_MLOCK=1
 ENTRYPOINT ["./app"]

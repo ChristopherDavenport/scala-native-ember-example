@@ -7,3 +7,6 @@
 project/project
 project/**/metals.sbt
 **/target/
+
+.dockerignore
+.gitignore
