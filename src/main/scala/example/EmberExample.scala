@@ -15,6 +15,7 @@ import epollcat.EpollApp
 import fs2.io.net.Network
 import fs2.io.net.tls.S2nConfig
 import fs2.io.net.tls.TLSContext
+import com.comcast.ip4s._
 
 object EmberExample extends EpollApp {
 
@@ -25,17 +26,19 @@ object EmberExample extends EpollApp {
       jsonOf
   }
 
-  def run(args: List[String]): IO[ExitCode] = customTLS
+  def run(args: List[String]): IO[ExitCode] =
+    customTLS
     .flatMap(createClient)
     .use{ client =>
       createServer(client).useForever
     }.as(ExitCode.Success)
 
-
   def createServer(client: Client[IO]): Resource[IO, Unit] =
     EmberServerBuilder.default[IO]
       .withHttp2
       .withHttpApp(app(client).orNotFound)
+      .withHost(ipv4"0.0.0.0")
+      .withPort(port"8080")
       .build
       .void
 
